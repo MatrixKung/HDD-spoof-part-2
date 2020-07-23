@@ -1,0 +1,87 @@
+;
+; hdd_spoofer_part_2.inf
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=Sample ; TODO: edit Class
+ClassGuid={78A1C341-4539-11d3-B88D-00C04FAD5171} ; TODO: edit ClassGuid
+Provider=%ManufacturerName%
+CatalogFile=hdd_spoofer_part_2.cat
+DriverVer= ; TODO: set DriverVer in stampinf property pages
+PnpLockDown=1
+
+[DestinationDirs]
+DefaultDestDir = 12
+hdd_spoofer_part_2_Device_CoInstaller_CopyFiles = 11
+
+; ================= Class section =====================
+
+[ClassInstall32]
+Addreg=SampleClassReg
+
+[SampleClassReg]
+HKR,,,0,%ClassName%
+HKR,,Icon,,-5
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+hdd_spoofer_part_2.sys  = 1,,
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with SourceDisksNames
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName%=Standard,NT$ARCH$
+
+[Standard.NT$ARCH$]
+%hdd_spoofer_part_2.DeviceDesc%=hdd_spoofer_part_2_Device, Root\hdd_spoofer_part_2 ; TODO: edit hw-id
+
+[hdd_spoofer_part_2_Device.NT]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+hdd_spoofer_part_2.sys
+
+;-------------- Service installation
+[hdd_spoofer_part_2_Device.NT.Services]
+AddService = hdd_spoofer_part_2,%SPSVCINST_ASSOCSERVICE%, hdd_spoofer_part_2_Service_Inst
+
+; -------------- hdd_spoofer_part_2 driver install sections
+[hdd_spoofer_part_2_Service_Inst]
+DisplayName    = %hdd_spoofer_part_2.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\hdd_spoofer_part_2.sys
+
+;
+;--- hdd_spoofer_part_2_Device Coinstaller installation ------
+;
+
+[hdd_spoofer_part_2_Device.NT.CoInstallers]
+AddReg=hdd_spoofer_part_2_Device_CoInstaller_AddReg
+CopyFiles=hdd_spoofer_part_2_Device_CoInstaller_CopyFiles
+
+[hdd_spoofer_part_2_Device_CoInstaller_AddReg]
+HKR,,CoInstallers32,0x00010000, "WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll,WdfCoInstaller"
+
+[hdd_spoofer_part_2_Device_CoInstaller_CopyFiles]
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll
+
+[hdd_spoofer_part_2_Device.NT.Wdf]
+KmdfService =  hdd_spoofer_part_2, hdd_spoofer_part_2_wdfsect
+[hdd_spoofer_part_2_wdfsect]
+KmdfLibraryVersion = $KMDFVERSION$
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+ManufacturerName="<Your manufacturer name>" ;TODO: Replace with your manufacturer name
+ClassName="Samples" ; TODO: edit ClassName
+DiskName = "hdd_spoofer_part_2 Installation Disk"
+hdd_spoofer_part_2.DeviceDesc = "hdd_spoofer_part_2 Device"
+hdd_spoofer_part_2.SVCDESC = "hdd_spoofer_part_2 Service"
