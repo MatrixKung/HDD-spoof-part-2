@@ -29,7 +29,7 @@ NTSTATUS DriverEntry(DRIVER_OBJECT* driverObject, PUNICODE_STRING registryPath)
 
     while (storDeviceObject != NULL)
     {
-        char* serialNumber = (char*)(storDeviceObject->DeviceExtension) + 0x68;    //serial number offset
+        char* serialNumber = (char*)(storDeviceObject->DeviceExtension) + 0xba;    //serial number offset
 
         RtlCopyMemory(serialNumber, spoofed_by_jguo12, sizeof(spoofed_by_jguo12));
 
